@@ -16,7 +16,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 public class CS402Lab1 extends javax.swing.JFrame {
 
     String mode = "enc";
@@ -110,7 +112,7 @@ public class CS402Lab1 extends javax.swing.JFrame {
         return res;
     }
 
-    static String Vigenère_generateKey(String str, String key) {
+     static String Vigenère_generateKey(String str, String key) {
         int x = str.length();
         for (int i = 0;; i++) {
             if (x == i) {
@@ -1798,7 +1800,48 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             return encrypt;
         }
     }
+    public static String dec_AES(String plainText, String keyText) {
+                    plainText = plainText.replaceAll("\\s", "");
+            System.out.println(plainText);
+        try {
+            // convert key to bytes
+            byte[] keyBytes = keyText.getBytes("UTF-8");
 
+            // create secret key spec
+            SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+
+            // create cipher instance
+            Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+
+            // initialize cipher for decryption
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+
+            // decode ciphertext from hex string to bytes
+            byte[] ciphertextBytes = hexStringToByteArray(plainText);
+
+            // decrypt ciphertext
+            byte[] decryptedBytes = cipher.doFinal(ciphertextBytes);
+
+            // convert decrypted bytes to plaintext string
+            String plaintext = new String(decryptedBytes, "UTF-8");
+
+            // return plaintext
+            return plaintext;
+        } catch (Exception e) {
+            // handle exception
+            return null;
+        }
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
     //************************************************************************************************************** 
     //**************************************************************************************************************
     @SuppressWarnings("unchecked")
@@ -2017,7 +2060,6 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
 
         if (cellect.equals("Caesar")) {
             c = Caesar_encrypt(p, key);
-
         } else if (cellect.equals("RowTranspositionCiphers")) {
             c = ROW_encrypt(p, key);
         } else if (cellect.equals("RailFenceCipher")) {
@@ -2090,6 +2132,8 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             cc = decrypt_Vernam(c, key);
         } else if (cellect.equals("Hill")) {
             cc = Hill_decrypt(c, key);
+        }else if (cellect.equals("AES")) {
+            cc = dec_AES(c, key);
         }
 
         long end = System.currentTimeMillis();
