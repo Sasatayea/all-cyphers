@@ -322,7 +322,7 @@
     <Component class="javax.swing.JComboBox" name="jComboBox1">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="13">
+          <StringArray count="14">
             <StringItem index="0" value="Caesar"/>
             <StringItem index="1" value="Monoalphabetic"/>
             <StringItem index="2" value="RailFenceCipher"/>
@@ -336,6 +336,7 @@
             <StringItem index="10" value="Vernam"/>
             <StringItem index="11" value="Hill"/>
             <StringItem index="12" value="MRT"/>
+            <StringItem index="13" value="AES"/>
           </StringArray>
         </Property>
       </Properties>

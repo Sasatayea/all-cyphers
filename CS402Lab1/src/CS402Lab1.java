@@ -1286,7 +1286,432 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             return " is Composite";
 
     } 
-    
+///***************************************
+//             AES
+    public static final int[][] s_box = {
+        {0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76},
+        {0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0},
+        {0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15},
+        {0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75},
+        {0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84},
+        {0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf},
+        {0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8},
+        {0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2},
+        {0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73},
+        {0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb},
+        {0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79},
+        {0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08},
+        {0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a},
+        {0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e},
+        {0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf},
+        {0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16},};
+
+    public static final int[][] inverse_s_box = {
+        {0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb},
+        {0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb},
+        {0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e},
+        {0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25},
+        {0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92},
+        {0x6c, 0x70, 0x48, 0x50, 0xfd, 0xed, 0xb9, 0xda, 0x5e, 0x15, 0x46, 0x57, 0xa7, 0x8d, 0x9d, 0x84},
+        {0x90, 0xd8, 0xab, 0x00, 0x8c, 0xbc, 0xd3, 0x0a, 0xf7, 0xe4, 0x58, 0x05, 0xb8, 0xb3, 0x45, 0x06},
+        {0xd0, 0x2c, 0x1e, 0x8f, 0xca, 0x3f, 0x0f, 0x02, 0xc1, 0xaf, 0xbd, 0x03, 0x01, 0x13, 0x8a, 0x6b},
+        {0x3a, 0x91, 0x11, 0x41, 0x4f, 0x67, 0xdc, 0xea, 0x97, 0xf2, 0xcf, 0xce, 0xf0, 0xb4, 0xe6, 0x73},
+        {0x96, 0xac, 0x74, 0x22, 0xe7, 0xad, 0x35, 0x85, 0xe2, 0xf9, 0x37, 0xe8, 0x1c, 0x75, 0xdf, 0x6e},
+        {0x47, 0xf1, 0x1a, 0x71, 0x1d, 0x29, 0xc5, 0x89, 0x6f, 0xb7, 0x62, 0x0e, 0xaa, 0x18, 0xbe, 0x1b},
+        {0xfc, 0x56, 0x3e, 0x4b, 0xc6, 0xd2, 0x79, 0x20, 0x9a, 0xdb, 0xc0, 0xfe, 0x78, 0xcd, 0x5a, 0xf4},
+        {0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xec, 0x5f},
+        {0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d, 0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef},
+        {0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61},
+        {0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d},};
+
+    public static final int[][] INVERSE_AESMix_Column_CONST = {
+        {0x0e, 0x0b, 0x0d, 0x09},
+        {0x09, 0x0e, 0x0b, 0x0d},
+        {0x0d, 0x09, 0x0e, 0x0b},
+        {0x0b, 0x0d, 0x09, 0x0e},};
+
+    public static final int[] AESMATRIX_CONST1 = {0x01, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST2 = {0x02, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST3 = {0x04, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST4 = {0x08, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST5 = {0x10, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST6 = {0x20, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST7 = {0x40, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST8 = {0x80, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST9 = {0x1B, 0x00, 0x00, 0x00};
+    public static final int[] AESMATRIX_CONST10 = {0x36, 0x00, 0x00, 0x00};
+
+    private static int[] stringToDecimal(String text) {
+        int[] hex = new int[16];
+        for (int i = 0; i < text.length(); i++) {
+            String s = Integer.toBinaryString((int) text.charAt(i));
+            while (s.length() < 8) {
+                s = "0" + s;
+            }
+            String num = "0x" + Integer.toHexString(Integer.parseInt(s, 2)).toUpperCase();
+            hex[i] = Integer.decode(num);
+        }
+
+        return hex;
+    }
+
+    static int[][] AESmatrix(int[] arr) {
+        int count = 0;
+        int[][] m = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                m[j][i] = arr[count];
+                count++;
+            }
+        }
+        return m;
+    }
+
+    private static int[][] AESxor(int[][] plain, int[][] key) {
+        int[][] answer = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                answer[i][j] = plain[i][j] ^ key[i][j];
+            }
+        }
+        return answer;
+    }
+
+    private static int[][] AESsub(int[][] AESmatrixAESXOR) {
+        int[][] newAESMatrix = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                String s = Integer.toHexString(AESmatrixAESXOR[i][j]);
+                if (s.length() < 2) {
+                    s = "0" + s;
+                }
+                newAESMatrix[i][j] = s_box[Integer.parseInt(s.charAt(0) + "", 16)][Integer.parseInt(s.charAt(1) + "", 16)];
+            }
+        }
+        return newAESMatrix;
+    }
+
+    private static int[][] inv_AESsub(int[][] AESmatrixAESXOR) {
+        int[][] newAESMatrix = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                String s = Integer.toHexString(AESmatrixAESXOR[i][j]);
+                if (s.length() < 2) {
+                    s = "0" + s;
+                }
+                newAESMatrix[i][j] = inverse_s_box[Integer.parseInt(s.charAt(0) + "", 16)][Integer.parseInt(s.charAt(1) + "", 16)];
+            }
+        }
+        return newAESMatrix;
+    }
+
+    private static int[][] AESshift(int[][] AESmatrixAESSub) {
+        int[][] AESmatrixAESShift = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i == 0) {
+                    AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j];
+                } else if (i == 1) {
+                    if (j < 3) {
+                        AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j + 1];
+                    } else {
+                        AESmatrixAESShift[i][j] = AESmatrixAESSub[i][0];
+                    }
+                } else if (i == 2) {
+                    if (j < 2) {
+                        AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j + 2];
+                    } else {
+                        AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j - 2];
+                    }
+                } else {
+                    if (j == 0) {
+                        AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j + 3];
+                    } else {
+                        if (j == 1) {
+                            AESmatrixAESShift[i][j] = AESmatrixAESSub[i][0];
+                        } else if (j == 2) {
+                            AESmatrixAESShift[i][j] = AESmatrixAESSub[i][1];
+                        } else {
+                            AESmatrixAESShift[i][j] = AESmatrixAESSub[i][2];
+                        }
+                    }
+                }
+            }
+        }
+        return AESmatrixAESShift;
+    }
+
+    private static int[][] AESinv_AESshift(int[][] AESmatrixAESSub) {
+        int[][] AESmatrixAESShift = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i == 0) {
+                    AESmatrixAESShift[i][j] = AESmatrixAESSub[i][j];
+                } else if (i == 1) {
+                    if (j < 3) {
+                        AESmatrixAESShift[i][j + 1] = AESmatrixAESSub[i][j];
+                    } else {
+                        AESmatrixAESShift[i][0] = AESmatrixAESSub[i][j];
+                    }
+                } else if (i == 2) {
+                    if (j < 2) {
+                        AESmatrixAESShift[i][j + 2] = AESmatrixAESSub[i][j];
+                    } else {
+                        AESmatrixAESShift[i][j - 2] = AESmatrixAESSub[i][j];
+                    }
+                } else {
+                    if (j == 0) {
+                        AESmatrixAESShift[i][j + 3] = AESmatrixAESSub[i][j];
+                    } else {
+                        if (j == 1) {
+                            AESmatrixAESShift[i][0] = AESmatrixAESSub[i][j];
+                        } else if (j == 2) {
+                            AESmatrixAESShift[i][1] = AESmatrixAESSub[i][j];
+                        } else {
+                            AESmatrixAESShift[i][2] = AESmatrixAESSub[i][j];
+                        }
+                    }
+                }
+            }
+        }
+        return AESmatrixAESShift;
+    }
+
+    private static int[] AESAESxorkey(int[] AESmatrix, int[] AESsubstitution) {
+        int[] add_round = new int[4];
+        for (int i = 0; i < 4; i++) {
+            add_round[i] = AESmatrix[i] ^ AESsubstitution[i];
+        }
+
+        return add_round;
+    }
+
+    private static int[][] AESrounds(int[] AESMATRIX_CONST, int[][] AESmatrixKey) {
+        int[] w0 = new int[4];
+        int[] w1 = new int[4];
+        int[] w2 = new int[4];
+        int[] w3 = new int[4];
+        int[] left_AESshift = new int[4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i == 0) {
+                    w0[j] = AESmatrixKey[j][i];
+                } else if (i == 1) {
+                    w1[j] = AESmatrixKey[j][i];
+                } else if (i == 2) {
+                    w2[j] = AESmatrixKey[j][i];
+                } else {
+                    w3[j] = AESmatrixKey[j][i];
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                left_AESshift[i] = w3[0];
+            } else {
+                left_AESshift[i] = w3[i + 1];
+            }
+        }
+
+        int[] AESsubstitution = new int[4];
+        for (int i = 0; i < 4; i++) {
+            String s = Integer.toHexString(left_AESshift[i]);
+            if (s.length() < 2) {
+                s = "0" + s;
+            }
+            AESsubstitution[i] = s_box[Integer.parseInt(s.charAt(0) + "", 16)][Integer.parseInt(s.charAt(1) + "", 16)];
+        }
+
+        int[] add_round = AESAESxorkey(AESMATRIX_CONST, AESsubstitution);
+
+        int[] w4 = AESAESxorkey(w0, add_round);
+        int[] w5 = AESAESxorkey(w4, w1);
+        int[] w6 = AESAESxorkey(w5, w2);
+        int[] w7 = AESAESxorkey(w6, w3);
+
+        int[][] roundkey = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i == 0) {
+                    roundkey[j][i] = w4[j];
+                } else if (i == 1) {
+                    roundkey[j][i] = w5[j];
+                } else if (i == 2) {
+                    roundkey[j][i] = w6[j];
+                } else {
+                    roundkey[j][i] = w7[j];
+                }
+            }
+        }
+
+        return roundkey;
+    }
+
+    static int[][] AESmix(int[][] AESmatrixAESShift) {
+        int[][] arr = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i == 0) {
+                    int e1 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[0][j])), 10);
+                    if (e1 > 11111111) {
+                        e1 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e1 + "", 2));
+                        e1 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e1 = (0x02 * AESmatrixAESShift[0][j]);
+                    }
+                    int e2 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[1][j])), 10);
+                    if (e2 > 11111111) {
+                        e2 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e2 + "", 2));
+                        e2 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e2 = 0x02 * AESmatrixAESShift[1][j];
+                    }
+                    arr[0][j] = e1 ^ (e2 ^ AESmatrixAESShift[1][j]) ^ (AESmatrixAESShift[2][j]) ^ (AESmatrixAESShift[3][j]);
+                } else if (i == 1) {
+                    int e2 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[1][j])), 10);
+                    if (e2 > 11111111) {
+                        e2 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e2 + "", 2));
+                        e2 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e2 = 0x02 * AESmatrixAESShift[1][j];
+                    }
+                    int e3 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[2][j])), 10);
+                    if (e3 > 11111111) {
+                        e3 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e3 + "", 2));
+                        e3 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e3 = 0x02 * AESmatrixAESShift[2][j];
+                    }
+                    arr[1][j] = (AESmatrixAESShift[0][j]) ^ e2 ^ (e3 ^ AESmatrixAESShift[2][j]) ^ (AESmatrixAESShift[3][j]);
+                } else if (i == 2) {
+                    int e3 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[2][j])), 10);
+                    if (e3 > 11111111) {
+                        e3 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e3 + "", 2));
+                        e3 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e3 = 0x02 * AESmatrixAESShift[2][j];
+                    }
+                    int e4 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[3][j])), 10);
+                    if (e4 > 11111111) {
+                        e4 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e4 + "", 2));
+                        e4 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e4 = 0x02 * AESmatrixAESShift[3][j];
+                    }
+                    arr[2][j] = (AESmatrixAESShift[0][j]) ^ (AESmatrixAESShift[1][j]) ^ e3 ^ (e4 ^ AESmatrixAESShift[3][j]);
+                } else {
+                    int e1 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[0][j])), 10);
+                    if (e1 > 11111111) {
+                        e1 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e1 + "", 2));
+                        e1 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e1 = 0x02 * AESmatrixAESShift[0][j];
+                    }
+                    int e4 = Integer.parseInt(Integer.toBinaryString((0x02 * AESmatrixAESShift[3][j])), 10);
+                    if (e4 > 11111111) {
+                        e4 -= 100000000;
+                        String y = "0x" + Integer.toHexString(Integer.parseInt(e4 + "", 2));
+                        e4 = Integer.decode("0x" + Integer.toHexString(Integer.decode(y) ^ 0x1B));
+                    } else {
+                        e4 = 0x02 * AESmatrixAESShift[3][j];
+                    }
+                    arr[3][j] = (e1 ^ AESmatrixAESShift[0][j]) ^ (AESmatrixAESShift[1][j]) ^ (AESmatrixAESShift[2][j]) ^ e4;
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    public static String encryption_AES(String plainText, String keyText) {
+        if (plainText.length() > 16) {
+            return "Length of plain text must be equal 16";
+        } else if (keyText.length() > 16) {
+            return "Length of key must be equal 16";
+        } else {
+            String encrypt = "";
+            int[] key = stringToDecimal(keyText);
+            int[] plain = stringToDecimal(plainText);
+            int[][] AESmatrixKey = AESmatrix(key);
+            int[][] AESmatrixPlain = AESmatrix(plain);
+            int[][] AESmatrixAESXOR = AESxor(AESmatrixPlain, AESmatrixKey);
+            int[][] AESmatrixAESSub = AESsub(AESmatrixAESXOR);
+            int[][] AESmatrixAESShift = AESshift(AESmatrixAESSub);
+            int[][] round1 = AESrounds(AESMATRIX_CONST1, AESmatrixKey);
+            int[][] round2 = AESrounds(AESMATRIX_CONST2, round1);
+            int[][] round3 = AESrounds(AESMATRIX_CONST3, round2);
+            int[][] round4 = AESrounds(AESMATRIX_CONST4, round3);
+            int[][] round5 = AESrounds(AESMATRIX_CONST5, round4);
+            int[][] round6 = AESrounds(AESMATRIX_CONST6, round5);
+            int[][] round7 = AESrounds(AESMATRIX_CONST7, round6);
+            int[][] round8 = AESrounds(AESMATRIX_CONST8, round7);
+            int[][] round9 = AESrounds(AESMATRIX_CONST9, round8);
+            int[][] round10 = AESrounds(AESMATRIX_CONST10, round9);
+            int[][] AESmix_column = AESmix(AESmatrixAESShift);
+            int[][] AES_ROUND1 = AESxor(AESmix_column, round1);
+
+            // round 2
+            int[][] AESmatrixAESSub1 = AESsub(AES_ROUND1);
+            int[][] AESmatrixAESShift1 = AESshift(AESmatrixAESSub1);
+            int[][] AESmix_column1 = AESmix(AESmatrixAESShift1);
+            int[][] AES_ROUND2 = AESxor(AESmix_column1, round2);
+            // round 3
+            int[][] AESmatrixAESSub2 = AESsub(AES_ROUND2);
+            int[][] AESmatrixAESShift2 = AESshift(AESmatrixAESSub2);
+            int[][] AESmix_column2 = AESmix(AESmatrixAESShift2);
+            int[][] AES_ROUND3 = AESxor(AESmix_column2, round3);
+            // round 4
+            int[][] AESmatrixAESSub3 = AESsub(AES_ROUND3);
+            int[][] AESmatrixAESShift3 = AESshift(AESmatrixAESSub3);
+            int[][] AESmix_column3 = AESmix(AESmatrixAESShift3);
+            int[][] AES_ROUND4 = AESxor(AESmix_column3, round4);
+            // round 5
+            int[][] AESmatrixAESSub4 = AESsub(AES_ROUND4);
+            int[][] AESmatrixAESShift4 = AESshift(AESmatrixAESSub4);
+            int[][] AESmix_column4 = AESmix(AESmatrixAESShift4);
+            int[][] AES_ROUND5 = AESxor(AESmix_column4, round5);
+            // round 6
+            int[][] AESmatrixAESSub5 = AESsub(AES_ROUND5);
+            int[][] AESmatrixAESShift5 = AESshift(AESmatrixAESSub5);
+            int[][] AESmix_column5 = AESmix(AESmatrixAESShift5);
+            int[][] AES_ROUND6 = AESxor(AESmix_column5, round6);
+            // round 7
+            int[][] AESmatrixAESSub6 = AESsub(AES_ROUND6);
+            int[][] AESmatrixAESShift6 = AESshift(AESmatrixAESSub6);
+            int[][] AESmix_column6 = AESmix(AESmatrixAESShift6);
+            int[][] AES_ROUND7 = AESxor(AESmix_column6, round7);
+            // round 8
+            int[][] AESmatrixAESSub7 = AESsub(AES_ROUND7);
+            int[][] AESmatrixAESShift7 = AESshift(AESmatrixAESSub7);
+            int[][] AESmix_column7 = AESmix(AESmatrixAESShift7);
+            int[][] AES_ROUND8 = AESxor(AESmix_column7, round8);
+            // round 9
+            int[][] AESmatrixAESSub8 = AESsub(AES_ROUND8);
+            int[][] AESmatrixAESShift8 = AESshift(AESmatrixAESSub8);
+            int[][] AESmix_column8 = AESmix(AESmatrixAESShift8);
+            int[][] AES_ROUND9 = AESxor(AESmix_column8, round9);
+            // round 10
+            int[][] AESmatrixAESSub9 = AESsub(AES_ROUND9);
+            int[][] AESmatrixAESShift9 = AESshift(AESmatrixAESSub9);
+            int[][] AES_ROUND10 = AESxor(AESmatrixAESShift9, round10);
+            System.out.print("Encryption : ");
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    encrypt += Integer.toHexString(AES_ROUND10[j][i]).toUpperCase() + " ";
+                }
+            }
+            return encrypt;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1395,7 +1820,7 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(153, 0, 0));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Caesar", "Monoalphabetic", "RailFenceCipher", "RowTranspositionCiphers", "Playfair", "Vigenère", "Autokey", "DES", "RSA", "OneTimePad", "Vernam", "Hill", "MRT" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Caesar", "Monoalphabetic", "RailFenceCipher", "RowTranspositionCiphers", "Playfair", "Vigenère", "Autokey", "DES", "RSA", "OneTimePad", "Vernam", "Hill", "MRT", "AES" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -1528,6 +1953,8 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
              c = Hill_encrypt(p, key); 
         }else if(cellect.equals("MRT")){
              c = MRT(p, key); 
+        }else if(cellect.equals("AES")){
+             c = encryption_AES(p, key); 
         }
         
         long end = System.currentTimeMillis();
