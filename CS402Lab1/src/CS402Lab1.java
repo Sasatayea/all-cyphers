@@ -26,7 +26,117 @@ public class CS402Lab1 extends javax.swing.JFrame {
     public CS402Lab1() {
         initComponents();
     }
+/*
+//Caesar Cipher
+Key:  23
+Plaintext: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Ciphertext: XYZABCDEFGHIJKLMNOPQRSTUVW
+*/
 
+/*
+//Monoalphabetic
+ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+Key:  phqgiumeaylnofdxjkrcvstzwb
+plain: hello world
+cipher: einnd tdkng
+*/
+
+/*
+//Playfair
+Key:  MONARCHY
+Plaintext: mohammed  (MOHAMXMEDX)
+Ciphertext: ONBOAUCLBZ
+		MOHAMXMEDX
+*/
+
+/*
+//hill
+Key:  cddg
+Plaintext: attack
+Ciphertext: FKMFIO
+*/
+
+/*
+//rail fance
+Key:  2
+Plaintext: meet me after the toga party
+Ciphertext: MEMATRHTGPRYETEFETEOAAT
+*/
+
+ /*
+//Row Transposition
+Key: 4312567
+Plaintext: attackpostponeduntiltwoam
+Ciphertext: ttnaaptmtsuoaodwcoixknlypetz
+Column Out 4 3 1 2 5 6 7     (dcabefg)
+Plaintext: a t t a c k p
+           o s t p o n e
+           d u n t i l t
+           w o a m x y z
+*/
+
+/*
+//Autokey Cipher
+key: deceptive
+plaintext: wearediscoveredsaveyourself
+ciphertext:zicvtwqngkzeiigasxstslvvwla
+key: deceptivewearediscoveredsav
+*/
+
+/*
+//Vigenère Cipher
+key: deceptive
+plaintext: wearediscoveredsaveyourself
+ciphertext: zicvtwqngrzgvtwavzhcqyglmgj
+key: deceptivedeceptivedeceptive
+*/
+
+/*
+//One-Time Pad Cipher
+key:
+plaintext: wearediscoveredsaveyourself
+ciphertext: zicvtwqngrzgvtwavzhcqyglmgj
+*/
+
+/*
+//Vernam Cipher
+key: deceptive
+plaintext: wearediscoveredsaveyourself
+ciphertext:
+key: 	     deceptivedeceptivedeceptive
+
+ciphertext: ANKYODKYUREPFJBYOJDSPLREYIUNOFDOIUERFPLUYTS
+key: pxlmvmsydofuyrvzwc tnlebnecvgdupahfzzlmnyih
+plaintext: mr mustard with the candlestick in the hall
+*/
+
+/*
+//DES
+Key:  00010011 00110100 01010111 01111001 10011011 10111100 11011111 11110001
+Plaintext: 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
+Ciphertext:
+*/
+
+/*
+//AES
+Key:  Thats my Kung Fu
+Plaintext: Two One Nine Two
+Ciphertext: 29 C3 50 5F 57 14 20 F6 40 22 99 B3 1A 2 D7 3A
+29C3505F571420F6402299B31A02D73A
+*/
+
+/*
+//RSA
+Key:
+Plaintext: mohammed
+Ciphertext:
+*/
+
+    /*
+    //MRT
+    key(iteration): 2
+    plain (prime) : 1596589
+    */
     public static String Caesar_encrypt(String p, String key) {
         String c = "";
         String k = p.toLowerCase();
@@ -1801,9 +1911,17 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
         }
     }
     public static String dec_AES(String plainText, String keyText) {
-                    plainText = plainText.replaceAll("\\s", "");
-            System.out.println(plainText);
+//        plainText = plainText.replaceAll("\\s", "");
+//        System.out.println(plainText);
         try {
+            String Np="";
+            String[] parts = plainText.trim().split("\\s+");
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].length() == 1) {
+                    parts[i] = "0" + parts[i];
+                }
+                Np+=parts[i];
+            }
             // convert key to bytes
             byte[] keyBytes = keyText.getBytes("UTF-8");
 
@@ -1817,6 +1935,9 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
             // decode ciphertext from hex string to bytes
+//            plainText = plainText.replaceAll("\\s", "");
+//            System.out.println(plainText);
+            plainText=Np;
             byte[] ciphertextBytes = hexStringToByteArray(plainText);
 
             // decrypt ciphertext
