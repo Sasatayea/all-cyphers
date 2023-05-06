@@ -442,7 +442,7 @@ public class CS402Lab1 extends javax.swing.JFrame {
     }
     //************************************************************************************************************** 
     //**************************************************************************************************************
-    
+
     public static String encrypt_Vernam(String plaintext, String key) {
         String key2 = Vigenère_generateKey(plaintext, key);
         byte[] plainBytes = plaintext.getBytes(StandardCharsets.UTF_8);
@@ -469,6 +469,7 @@ public class CS402Lab1 extends javax.swing.JFrame {
 
         return new String(plainBytes, StandardCharsets.UTF_8);
     }
+
     //************************************************************************************************************** 
     //**************************************************************************************************************
     // hill 
@@ -575,6 +576,7 @@ public class CS402Lab1 extends javax.swing.JFrame {
         }
         return val;
     }
+
     //************************************************************************************************************** 
     //**************************************************************************************************************
     /*
@@ -1121,7 +1123,12 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
     //************************************************************************************************************** 
     //**************************************************************************************************************
     // RSA
-    public static String RSA_encrypt(String m, String key) {
+    private BigInteger N = BigInteger.valueOf(0);
+    private BigInteger d = BigInteger.valueOf(0);
+    private BigInteger[] array;
+    private int[] arr;
+
+    public String RSA_encrypt(String m, String key) {
         String ccc = "";
         boolean c = false;
         long p = 0;
@@ -1145,7 +1152,7 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
                 break;
             }
         }
-        BigInteger N = BigInteger.valueOf(p * Q);
+        N = BigInteger.valueOf(p * Q);
         System.out.println("n = " + N);
         BigInteger Phi = BigInteger.valueOf((p - 1) * (Q - 1));
         System.out.println("Phi = " + Phi);
@@ -1160,11 +1167,11 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             BigInteger sa = BigInteger.valueOf(E);
             //BigInteger eee =BigInteger.valueOf(sa).compareTo(Phi);
             if (prime2 && E != Q && E != p) {
-                System.out.println("e = " + E);
+//                System.out.println("e = " + E);
                 break;
             }
         }
-        BigInteger d = BigInteger.valueOf(E).modInverse(Phi);
+        d = BigInteger.valueOf(E).modInverse(Phi);
         System.out.println("d = " + d);
         int[] arr = new int[m.length()];
 
@@ -1177,10 +1184,10 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             int newascii = Integer.parseInt(ss);
             arr[i] = newascii;
 //            AAA += ss;
-            System.out.println("Ascii of " + m.charAt(i) + " = " + ss);
+//            System.out.println("Ascii of " + m.charAt(i) + " = " + ss);
         }
         //enc
-        BigInteger[] array = new BigInteger[m.length()];
+        array = new BigInteger[m.length()];
 
         for (int i = 0; i < arr.length; i++) {
             BigInteger EE = BigInteger.valueOf(E);
@@ -1188,16 +1195,16 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             BigInteger ci = BigInteger.valueOf(arr[i]).modPow(EE, N);
             array[i] = ci;
             ccc = ccc + ci + " ";
-            System.out.println("C " + i + " = " + ci);
+//            System.out.println("C " + i + " = " + ci);
         }
         //dec
-        BigInteger[] arri = new BigInteger[m.length()];
-        for (int i = 0; i < arr.length; i++) {
-//            BigInteger mas = array[i].pow(d.intValue()).mod(N);
-            BigInteger mas = array[i].modPow(d, N);
-            arri[i] = mas;
-            System.out.println("M " + i + " = " + mas + " = " + m.charAt(i));
-        }
+//        BigInteger[] arri = new BigInteger[m.length()];
+//        for (int i = 0; i < arr.length; i++) {
+////            BigInteger mas = array[i].pow(d.intValue()).mod(N);
+//            BigInteger mas = array[i].modPow(d, N);
+//            arri[i] = mas;
+//            System.out.println("M " + i + " = " + mas + " = " + m.charAt(i));
+//        }
 
         return ccc;
     }
@@ -1248,10 +1255,39 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
     public static long mulMod(long a, long b, long mod) {
         return BigInteger.valueOf(a).multiply(BigInteger.valueOf(b)).mod(BigInteger.valueOf(mod)).longValue();
     }
+
+    public String RSA_decrypt(String m, String key) {
+//******************************************************************
+        String ccc = "";
+        String AAA = "";
+//       String input = "958544117016576 13657684175991 152269322229177 542541934788529 958544117016576 958544117016576 277546329453960 742224338145632 ";
+        String[] parts = m.trim().split("\\s+");
+        BigInteger[] output = new BigInteger[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            output[i] = new BigInteger(parts[i]);
+        }
+        BigInteger[] arri = new BigInteger[output.length];
+        for (int i = 0; i < output.length; i++) {
+//            BigInteger mas = output[i].pow(d.intValue()).mod(N);
+            BigInteger mas = output[i].modPow(d, N);
+            arri[i] = mas;
+//            System.out.println("M " + i + " = " + (arri[i].toString()));
+//            System.out.println(d);
+            AAA += arri[i].toString() + " ";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (BigInteger asciiCode : arri) {
+            char c = (char) asciiCode.intValue();
+            sb.append(c);
+        }
+        String text = sb.toString();
+
+        return text;
+    }
+
     //************************************************************************************************************** 
     //************************************************************************************************************** 
-   // millar test
- 
+    // millar test
     public static boolean Test(BigInteger q, BigInteger n) {
         BigInteger maxLimit = new BigInteger(n.subtract(BigInteger.valueOf(4)) + "");
         BigInteger minLimit = new BigInteger("2");
@@ -1762,6 +1798,7 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
             return encrypt;
         }
     }
+
     //************************************************************************************************************** 
     //**************************************************************************************************************
     @SuppressWarnings("unchecked")
@@ -2046,7 +2083,7 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
         } else if (cellect.equals("DES")) {
             cc = DES_decrypt(c, key);
         } else if (cellect.equals("RSA")) {
-            cc = "no decrypt ";
+            cc = RSA_decrypt(c, key);
         } else if (cellect.equals("OneTimePad")) {
             cc = decrypt_one(c, key);
         } else if (cellect.equals("Vernam")) {
