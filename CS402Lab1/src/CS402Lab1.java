@@ -405,6 +405,7 @@ Ciphertext:
     }
 
     public static String RailFenceCipher_encrypt(String text, String key) {
+        text = text.replaceAll("\\s+", "").toUpperCase();
 
         int key2 = Integer.parseInt(key);
         char[][] rail = new char[2][text.length()];
