@@ -310,6 +310,7 @@ Ciphertext:
 
     //************************************************************************************************************** 
     //**************************************************************************************************************
+
     public String ROW_encrypt(String plaintext, String k) {
         int[] permutation = new int[k.length()];
         for (int i = 0; i < k.length(); i++) {
@@ -2280,8 +2281,13 @@ M = 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1
                 while (scan.hasNext()) {
                     s += scan.nextLine() + "\n";
                 }
-
-                jTextArea2.setText(s.substring(0, s.length() - 1));
+                String last = s.substring(s.indexOf(":") + 1);
+                int colonIndex = s.indexOf(":");
+                String first = s.substring(0, colonIndex);
+                System.out.println(first);
+                System.out.println(last);
+                jTextArea2.setText(first);
+                jTextField1.setText(last);
 
                 scan.close();
 
